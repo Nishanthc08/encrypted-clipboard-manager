@@ -2,13 +2,67 @@
 # -*- coding: utf-8 -*-
 
 """
-Test script for the Encrypted Clipboard Manager.
-Tests core functionalities:
-- Password handling and encryption
-- Clipboard monitoring
-- Sensitive data detection
-- History management
-- Secure deletion
+Test Suite for Encrypted Clipboard Manager
+-----------------------------------------
+
+This comprehensive test suite validates the security features and functionality
+of the Encrypted Clipboard Manager, ensuring proper implementation of encryption,
+sensitive data detection, and secure clipboard management.
+
+Test Coverage:
+1. Cryptographic Operations
+   - Key derivation and management
+   - Encryption/decryption functionality
+   - Password change procedures and re-encryption
+   - Secure key wiping from memory
+   - Salt handling and verification
+
+2. Sensitive Data Detection
+   - Pattern-based detection of passwords, API keys, etc.
+   - Accurate classification of sensitivity levels
+   - Proper categorization of different data types
+   - Detection boundaries and edge cases
+
+3. Security Utilities
+   - Memory wiping effectiveness
+   - Secure file deletion operations
+   - Memory protection mechanisms
+   - Platform-specific security features
+
+4. Clipboard Management
+   - Secure clipboard monitoring
+   - Encrypted history management
+   - Safe search functionality across encrypted data
+   - Secure deletion of clipboard entries
+
+Security Considerations:
+    These tests handle sensitive operations and implement several
+    security measures:
+    
+    1. Test Data Protection:
+       - Uses temporary files with secure permissions
+       - Implements secure cleanup in tearDown methods
+       - Avoids logging sensitive test data
+       - Uses mock data for security tests
+    
+    2. Memory Safety:
+       - Cleans up sensitive variables after tests
+       - Validates memory wiping operations
+       - Ensures proper handling of cryptographic material
+       - Verifies secure deletion operations
+    
+    3. Isolation:
+       - Test files are isolated from production data
+       - Each test uses separate encryption keys
+       - Proper error handling prevents test leakage
+       - Test environment is properly cleaned between tests
+
+Testing Strategy:
+    - Unit tests verify individual component security
+    - Integration tests validate secure component interactions
+    - Error cases are explicitly tested to verify secure handling
+    - Both positive and negative test cases are included
+    - Security boundaries are explicitly tested
 """
 
 import os
@@ -34,7 +88,35 @@ app = QApplication([])
 
 
 class TestCryptoHandler(unittest.TestCase):
-    """Test the encryption and decryption functionality."""
+    """
+    Test suite for cryptographic operations and key management.
+    
+    This class tests the core security functionality of the application,
+    focusing on encryption strength, key management, and secure storage.
+    
+    Security Test Strategy:
+    1. Encryption Validation
+       - Verifies encryption produces different ciphertext than plaintext
+       - Ensures decryption correctly recovers the original plaintext
+       - Validates that different data produces different ciphertexts
+       - Confirms encryption includes proper authentication
+    
+    2. Key Management
+       - Tests secure password handling and key derivation
+       - Validates password change operations including re-encryption
+       - Ensures proper secure wiping of keys from memory
+       - Verifies that encryption fails after key removal
+    
+    3. Secure Storage
+       - Tests encrypted storage format and integrity
+       - Validates secure saving and loading of encrypted history
+       - Ensures history remains protected during password changes
+       - Verifies that encrypted data cannot be read without the key
+    
+    Security Considerations:
+        These tests handle cryptographic material and encryption keys.
+        All temporary files and test keys are properly wiped after testing.
+    """
     
     def setUp(self):
         """Set up the test environment."""
@@ -178,7 +260,36 @@ class TestCryptoHandler(unittest.TestCase):
 
 
 class TestSensitiveDataAnalyzer(unittest.TestCase):
-    """Test the sensitive data detection functionality."""
+    """
+    Test suite for sensitive data detection capabilities.
+    
+    This class validates the application's ability to detect and classify
+    different types of sensitive information in clipboard content.
+    
+    Security Test Strategy:
+    1. Pattern Detection
+       - Tests recognition of password patterns
+       - Validates credit card number detection
+       - Verifies API key and token identification
+       - Ensures detection works with various formats and delimiters
+    
+    2. Sensitivity Classification
+       - Validates correct assignment of sensitivity levels
+       - Tests prioritization of different sensitivity categories
+       - Ensures proper handling of mixed content
+       - Verifies conservative approach to sensitivity scoring
+    
+    3. Content Analysis
+       - Tests accurate content type determination
+       - Validates proper metadata extraction
+       - Ensures no false negatives for critical data types
+       - Verifies detection boundaries are appropriate
+    
+    Security Considerations:
+        While using mock sensitive data for testing, this class ensures
+        all test patterns are properly handled and not persisted after
+        test completion.
+    """
     
     def setUp(self):
         """Set up the test environment."""
@@ -268,7 +379,36 @@ class TestSensitiveDataAnalyzer(unittest.TestCase):
 
 
 class TestSecurityUtils(unittest.TestCase):
-    """Test the security utilities functionality."""
+    """
+    Test suite for security utility functions.
+    
+    This class tests critical security operations including secure
+    memory wiping, protected file operations, and memory safety features.
+    
+    Security Test Strategy:
+    1. Memory Protection
+       - Tests secure overwriting of sensitive data in memory
+       - Validates effectiveness across different data types
+       - Ensures overwritten data cannot be recovered
+       - Verifies proper handling of different container types
+    
+    2. Secure Deletion
+       - Tests file shredding capabilities
+       - Validates complete removal of file contents
+       - Ensures file system entry is properly removed
+       - Verifies secure overwrite patterns are applied
+    
+    3. Memory Management
+       - Tests secure variable wiping
+       - Validates best-effort memory protection
+       - Ensures proper cleanup of sensitive objects
+       - Verifies appropriate handling of Python's memory constraints
+    
+    Security Considerations:
+        These tests validate critical security operations that directly
+        affect the application's ability to protect sensitive data.
+        Test files are isolated and properly cleaned up after testing.
+    """
     
     def setUp(self):
         """Set up the test environment."""
@@ -373,7 +513,36 @@ class TestSecurityUtils(unittest.TestCase):
 
 
 class TestClipboardMonitorIntegration(unittest.TestCase):
-    """Integration tests for the clipboard monitor functionality."""
+    """
+    Integration tests for clipboard monitoring and secure history management.
+    
+    This class tests the secure interaction between components in the clipboard
+    monitoring pipeline, validating end-to-end encryption and history management.
+    
+    Security Test Strategy:
+    1. Component Integration
+       - Tests secure interaction between cryptography, detection, and security modules
+       - Validates that clipboard content is properly encrypted before storage
+       - Ensures sensitive data detection properly categorizes content
+       - Verifies security boundaries between components
+    
+    2. History Management
+       - Tests secure addition of entries to history
+       - Validates proper metadata handling and content encryption
+       - Ensures secure searching across encrypted content
+       - Verifies that search operations maintain content security
+    
+    3. Secure Operations
+       - Tests shredding of individual history entries
+       - Validates complete history shredding
+       - Ensures secure retrieval of encrypted content
+       - Verifies proper categorization of sensitive data
+    
+    Security Considerations:
+        These integration tests validate that security is maintained across
+        component boundaries. Mock clipboard content is used to ensure
+        consistent testing without affecting the system clipboard.
+    """
     
     def setUp(self):
         """Set up the test environment."""
@@ -493,7 +662,36 @@ class TestClipboardMonitorIntegration(unittest.TestCase):
 
 
 def test_history_file_initialization():
-    """Test proper initialization of empty history files."""
+    """
+    Test secure initialization of history files and error recovery.
+    
+    This standalone test validates the application's ability to securely
+    create, initialize, and recover history files under various conditions.
+    
+    Security Test Strategy:
+    1. File Creation
+       - Tests secure creation of new history files
+       - Validates proper file format and encryption
+       - Ensures appropriate file permissions
+       - Verifies proper salt generation and storage
+    
+    2. Error Recovery
+       - Tests handling of empty files
+       - Validates recovery from corrupted files
+       - Ensures secure re-initialization when needed
+       - Verifies data integrity is maintained
+    
+    3. Format Validation
+       - Tests proper JSON structure
+       - Validates presence of required security elements
+       - Ensures proper encryption of history entries
+       - Verifies secure default state
+    
+    Security Considerations:
+        File operations use temporary files that are securely deleted
+        after test completion. This test explicitly validates the security
+        of the application's persistent storage mechanisms.
+    """
     # Create a test file path
     fd, temp_path = tempfile.mkstemp()
     os.close(fd)
@@ -558,7 +756,35 @@ def test_history_file_initialization():
 
 
 def run_tests():
-    """Run all tests."""
+    """
+    Run the complete test suite with security validations.
+    
+    This function orchestrates the execution of all test cases in a
+    controlled manner, ensuring proper setup, execution, and cleanup.
+    
+    Test Execution Strategy:
+    1. Standalone Tests
+       - Runs file initialization tests first to validate storage security
+       - Ensures proper cleanup between test phases
+       - Provides detailed output for security validation
+    
+    2. Component Tests
+       - Executes unit tests for each security component
+       - Validates individual security features
+       - Ensures proper isolation between test cases
+       - Reports detailed results for security verification
+    
+    3. Integration Tests
+       - Tests secure interaction between components
+       - Validates end-to-end security
+       - Ensures no security boundary violations
+       - Verifies complete system security
+    
+    Security Considerations:
+        Test execution is carefully sequenced to ensure security controls
+        are validated in order of dependency. Results are reported without
+        exposing sensitive test data.
+    """
     # First run the standalone test for history file initialization
     print("Running history file initialization test...")
     test_history_file_initialization()
